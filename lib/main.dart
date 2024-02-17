@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:ssis/models/Student.dart';
+import 'package:ssis/respository/course_repo.dart';
+import 'package:ssis/respository/student_repo.dart';
 
 void main() {
+
+  CourseRepo crepo = CourseRepo();
+  StudentRepo srepo = StudentRepo();
   runApp(const MyApp());
 }
 
@@ -68,6 +74,14 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _addInfo() async{
+    CourseRepo cRepo = CourseRepo();
+    cRepo.updateCsv([["Bachelor of Science in Computer Science", "BSCS"]]);
+
+    StudentRepo sRepo = StudentRepo();
+    sRepo.updateCsv([["2022-0834", "Josiah Raziel S. Lluch", 2, "Male", "BSCS"]]);
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -116,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _addInfo,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
