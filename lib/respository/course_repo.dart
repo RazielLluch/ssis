@@ -1,7 +1,5 @@
 import 'dart:io' as io;
-import 'dart:convert';
 import 'package:ssis/handlers/file_handler.dart';
-import 'package:flutter/foundation.dart';
 
 class CourseRepo{
 
@@ -15,7 +13,7 @@ class CourseRepo{
     void _init() async{
 
         bool exists = await io.File('${handler.getDirectory()}courses.csv').exists();
-        print(exists);
+        print('Student repository already exists: $exists');
         if(exists == false){  
           print("Initializing course repository");
 
@@ -25,7 +23,7 @@ class CourseRepo{
 
         }else{
 
-          print("Course repository has already been initialized");
+          print("Course repository file has already been initialized");
         
         }
         

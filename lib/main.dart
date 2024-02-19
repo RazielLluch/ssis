@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:ssis/models/Student.dart';
 import 'package:ssis/respository/course_repo.dart';
 import 'package:ssis/respository/student_repo.dart';
+import 'package:ssis/handlers/searching_handler.dart';
+import 'package:ssis/misc/scope.dart';
+
 
 void main() {
 
-  CourseRepo crepo = CourseRepo();
-  StudentRepo srepo = StudentRepo();
+  CourseRepo cRepo = CourseRepo();
+  StudentRepo sRepo = StudentRepo();
   runApp(const MyApp());
+
+  
+  
 }
 
 class MyApp extends StatelessWidget {
@@ -34,7 +40,7 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -74,12 +80,24 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  //testing method
   void _addInfo() async{
     CourseRepo cRepo = CourseRepo();
     cRepo.updateCsv([["Bachelor of Science in Computer Science", "BSCS"]]);
 
     StudentRepo sRepo = StudentRepo();
     sRepo.updateCsv([["2022-0834", "Josiah Raziel S. Lluch", 2, "Male", "BSCS"]]);
+  }
+
+  //testing method
+  void _search() async{
+    print("start search");
+    
+    SearchHandler sHandler = SearchHandler();
+    
+    List list = await sHandler.searchItem("Jose P. Rizal", Scope.student);
+    print(list);
+    print("end");
   }
 
   @override
@@ -130,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addInfo,
+        onPressed: _search,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
