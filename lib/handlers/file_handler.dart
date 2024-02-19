@@ -1,94 +1,82 @@
 import 'dart:io';
-import 'dart:convert';
 import 'package:csv/csv.dart' as csv;
-import 'package:ssis/misc/scope.dart';
-import 'package:ssis/models/Course.dart';
-class FileHandler{
+class FileHandler{ 
 
     late final Directory dir;
 
-    FileHandler(String directoryName){
+    FileHandler(){
         dir = Directory.fromUri(Uri.directory('userdata'));
     }
     
-    //in progress
-    void readFile(List<List<String>> data, String file_name) async{
-        String csvFile = const csv.ListToCsvConverter().convert(data);
-        Directory dir = Directory.fromUri(Uri.directory('userdata'));
-        File file = File(file_name);
-        List<List<String>> something = [[]];
+    String getDirectory(){
+      return dir.absolute.path;
     }
 
-    //ni gana na
-    void init(String filename){
-        Scope scope;
-        if(filename == 'courses') scope = Scope.course;
-        else scope = Scope.student;
+    Future<List<List>> readFile(String file_name) async{
+        File csvFile = File('${getDirectory()}$file_name.csv');
+        return await csvToList(csvFile);
+    }
 
-        filename = '${dir.absolute.path}$filename.csv';
-        print(filename);
+    void init(List<List> data, String filename) async{
 
-        File(filename).create(recursive: true).then((File file){
-            if(scope == Scope.student){
-                List<List> data = [['course_name','course_code']];
-                appendCsv(data, filename);
-            }
+        String directory = '${getDirectory()}$filename.csv';
+        print('This is your file directory: $directory');
+        await File(directory).create(recursive: true).then((File file){
         });
+
+        appendCsv(data, filename);
     }  
 
-    void appendCsv(List<List> data, String filename){
+    void appendCsv(List<List> data, String filename)async{
 
-        // print(filename);
-        File csvFile = File('${dir.absolute.path}$filename');
-        List<List> csvList = csvToList(csvFile);
+        print("appedCsv Start\n");
 
-        
+        File csvFile = File('${getDirectory()}$filename.csv');
+        List<List> csvList = await csvToList(csvFile);
 
-        print(csvList);
+        print('1: $csvList');
 
-        // csvList.add(data);
         for(int i = 0; i < data.length; i++){
             csvList.add(data[i]);
         }
     
-        print(csvList);
-
-        String csv = listToCsv(csvList);
-        print(csv);
+        print('2: $csvList');
+        String csv = await listToCsv(csvList);
+        print('3: $csv');
 
         saveCsvFile(csv, csvFile);
-
+        print("appendCsv end");
     }
 
     saveCsvFile(String data, File csvFile){
         csvFile.writeAsStringSync(data);
     }
 
-    //ni gana na
-    String listToCsv(List<List> listToConvert){
+    Future<String> listToCsv(List<List> listToConvert) async{
         csv.ListToCsvConverter c = const csv.ListToCsvConverter(); 
-        return c.convert(listToConvert, fieldDelimiter: ','); //default field delimiter is ','
+        return await c.convert(listToConvert, fieldDelimiter: ','); //default field delimiter is ','
     }
 
-    //ni gana na 
-    List<List> csvToList(File myCsvFile){
+    Future<List<List>> csvToList(File myCsvFile)async{
+
         csv.CsvToListConverter c = 
             const csv.CsvToListConverter(eol: "\r\n", fieldDelimiter: ",");
-        print(myCsvFile.readAsStringSync());
-        return c.convert(myCsvFile.readAsStringSync());
+            
+        // print('converting csv to list: ${myCsvFile.readAsStringSync()}');
+        return await c.convert(myCsvFile.readAsStringSync());
     }
 }
 
-void main(){
+// void main(){
 
-    FileHandler handler = FileHandler('userdata');
-    handler.init('courses');
+//     FileHandler handler = FileHandler();
+//     handler.init('courses');
 
-    List<List> data =
-        [
-            ['course_name', 'course_code'],
-            ['Bachelor of Science in Computer Science', 'BSCS']
-        ];
+//     List<List> data =
+//         [
+//             ['course_name', 'course_code'],
+//             ['Bachelor of Science in Computer Science', 'BSCS']
+//         ];
 
-    handler.appendCsv(data, 'courses.csv');
-}
+//     handler.appendCsv(data, 'courses');
+// }

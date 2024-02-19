@@ -3,23 +3,27 @@ import 'Course.dart';
 class Student{
     late String _studentName;
     late String _studentId;
-    String? _yearLvl;
+    int? _yearLvl;
     late String _gender;
-    String? _course;
+    Course? _course;
 
-    Student(){
-
+    Student(String name, String id, int? yearlvl, String gender, String? course){
+        setName(name);
+        setId(id);
+        setYearLevel(yearlvl);
+        setGender(gender);
+        setCourse(course);
     }
 
-    void setStudentName(String name){
+    void setName(String name){
         _studentName = name;
     }
 
-    void setStudentId(String id){
+    void setId(String id){
         _studentId = id;
     }
 
-    void setYearLevel(String year){
+    void setYearLevel(int? year){
         _yearLvl = year;
     }    
 
@@ -27,7 +31,30 @@ class Student{
         _gender = gender;
     }
 
-    void setCourse(Course course){
-        _course = course.getCourseCode();   
+    void setCourse(String? course){
+
+        //finish course handler first
+
+        // _course = course.getCourseCode();   
+    }
+
+    String getName(){
+      return _studentName;
+    }
+
+    String getId(){
+      return _studentId;
+    }
+
+    int? getYear(){
+      return _yearLvl;
+    }
+      
+    String getGender(){
+      return _gender;
+    }
+
+    Course? getCourse(){
+      return _course;
     }
 }
