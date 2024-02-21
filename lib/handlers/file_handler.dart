@@ -20,7 +20,7 @@ class FileHandler{
     void init(List<List> data, String filename) async{
 
         String directory = '${getDirectory()}$filename.csv';
-        print('This is your file directory: $directory');
+        // print('This is your file directory: $directory');
         await File(directory).create(recursive: true).then((File file){
         });
 
@@ -29,23 +29,23 @@ class FileHandler{
 
     void appendCsv(List<List> data, String filename)async{
 
-        print("appedCsv Start\n");
+        // print("appedCsv Start\n");
 
         File csvFile = File('${getDirectory()}$filename.csv');
         List<List> csvList = await csvToList(csvFile);
 
-        print('1: $csvList');
+        // print('1: $csvList');
 
         for(int i = 0; i < data.length; i++){
             csvList.add(data[i]);
         }
     
-        print('2: $csvList');
+        // print('2: $csvList');
         String csv = await listToCsv(csvList);
-        print('3: $csv');
+        // print('3: $csv');
 
         saveCsvFile(csv, csvFile);
-        print("appendCsv end");
+        // print("appendCsv end");
     }
 
     saveCsvFile(String data, File csvFile){
