@@ -3,6 +3,7 @@ import 'package:ssis/models/Student.dart';
 import 'package:ssis/respository/course_repo.dart';
 import 'package:ssis/respository/student_repo.dart';
 import 'package:ssis/handlers/searching_handler.dart';
+import 'package:ssis/widgets/search_widget.dart';
 import 'package:ssis/misc/scope.dart';
 
 
@@ -12,8 +13,6 @@ void main() {
   StudentRepo sRepo = StudentRepo();
   runApp(const MyApp());
 
-  
-  
 }
 
 class MyApp extends StatelessWidget {
@@ -23,7 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Simple Student Information System',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -43,7 +42,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'SSIS Home Page'),
     );
   }
 }
@@ -95,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
     
     SearchHandler sHandler = SearchHandler();
     
-    List list = await sHandler.searchItem("Jose P. Rizal", Scope.student);
+    List list = await sHandler.searchItem("BA", Scope.student);
     print(list);
     print("end");
   }
@@ -121,30 +120,48 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+        child: Container(
+          decoration: const BoxDecoration(
+            shape: BoxShape.rectangle,
+            color: Colors.green,
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 20.0),
+          alignment: Alignment.center,
+          child: Column(
+            // Column is also a layout widget. It takes a list of children and
+            // arranges them vertically. By default, it sizes itself to fit its
+            // children horizontally, and tries to be as tall as its parent.
+            //
+            // Column has various properties to control how it sizes itself and
+            // how it positions its children. Here we use mainAxisAlignment to
+            // center the children vertically; the main axis here is the vertical
+            // axis because Columns are vertical (the cross axis would be
+            // horizontal).
+            //
+            // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+            // action in the IDE, or press "p" in the console), to see the
+            // wireframe for each widget.
+            
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                margin: const EdgeInsets.all(25.0),
+                padding: const EdgeInsets.all(10.0),
+                alignment: Alignment.center,
+                color: Colors.yellow,
+                child: const Text(
+                'Search'
+                ),
+              ),
+              Container(
+                color: Colors.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: studentsAndCourses(context),
+                ),
+              )
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -153,5 +170,26 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  List<Widget> studentsAndCourses(context){
+    return [
+      Container(
+        margin: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(200.0),
+        color: Colors.red,
+        child: const Text(
+          'Students'
+        ),
+      ),
+      Container(
+        margin: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(200.0),
+        color: Colors.orange,
+        child: const Text(
+          'Courses'
+        ),
+      ),
+    ];
   }
 }

@@ -28,7 +28,7 @@ class SearchHandler{
             }
         }
 
-        print('valid searches: $validSearches');
+        // print('valid searches: $validSearches');
 
         return validSearches;
     }
@@ -38,12 +38,12 @@ class SearchHandler{
     // }
 }
 
-void main()async{
+// void main()async{
 
-    print("start");
-    SearchHandler handler = SearchHandler();
-    var results = await handler.searchItem("BSCS", Scope.student);
+//     print("start");
+//     SearchHandler handler = SearchHandler();
+//     var results = await handler.searchItem("BSCS", Scope.student);
 
-    print('results: $results');
+//     print('results: $results');
 
-}
+// }

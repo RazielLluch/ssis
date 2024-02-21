@@ -13,17 +13,17 @@ class StudentRepo{
     void _init() async{
 
         bool exists = await io.File('${handler.getDirectory()}students.csv').exists();
-        print('Student repository already exists: $exists');
+        // print('Student repository already exists: $exists');
         if(exists == false){  
-          print("Initializing student repository");
+          // print("Initializing student repository");
 
           handler.init([["IDNum", "StudentName", "yearLvl", "gender", "Course"]],'students');
 
-          print("Student repository has been initialized");
+          // print("Student repository has been initialized");
 
         }else{
 
-          print("Student repository file has already been initialized");
+          // print("Student repository file has already been initialized");
  
         }
         
