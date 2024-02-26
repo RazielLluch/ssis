@@ -4,15 +4,16 @@ import 'package:ssis/respository/course_repo.dart';
 import 'package:ssis/respository/student_repo.dart';
 import 'package:ssis/handlers/searching_handler.dart';
 import 'package:ssis/widgets/search_widget.dart';
+import 'package:desktop_window/desktop_window.dart';
 import 'package:ssis/misc/scope.dart';
+import 'package:ssis/widgets/students_widget.dart';
+import 'package:ssis/widgets/courses_widget.dart';
 
 
-void main() {
-
+void main() async{
   CourseRepo cRepo = CourseRepo();
   StudentRepo sRepo = StudentRepo();
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -45,6 +46,15 @@ class MyApp extends StatelessWidget {
       home: const MyHomePage(title: 'SSIS Home Page'),
     );
   }
+
+  //wala pa ni gana
+  void setSize() async{
+    Size windowSize = await DesktopWindow.getWindowSize();
+    windowSize = Size(windowSize.width, windowSize.height);
+    await DesktopWindow.setWindowSize(Size(windowSize.width, windowSize.height));
+    await DesktopWindow.setMinWindowSize(Size(windowSize.width, windowSize.height));
+    await DesktopWindow.setMaxWindowSize(Size(windowSize.width, windowSize.height));
+  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -66,18 +76,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
 
   //testing method
   void _addInfo() async{
@@ -128,24 +126,10 @@ class _MyHomePageState extends State<MyHomePage> {
           margin: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 20.0),
           alignment: Alignment.center,
           child: Column(
-            // Column is also a layout widget. It takes a list of children and
-            // arranges them vertically. By default, it sizes itself to fit its
-            // children horizontally, and tries to be as tall as its parent.
-            //
-            // Column has various properties to control how it sizes itself and
-            // how it positions its children. Here we use mainAxisAlignment to
-            // center the children vertically; the main axis here is the vertical
-            // axis because Columns are vertical (the cross axis would be
-            // horizontal).
-            //
-            // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-            // action in the IDE, or press "p" in the console), to see the
-            // wireframe for each widget.
-            
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                margin: const EdgeInsets.all(25.0),
+                margin: const EdgeInsets.only(bottom: 16.0),
                 padding: const EdgeInsets.all(10.0),
                 alignment: Alignment.center,
                 color: Colors.yellow,
@@ -173,23 +157,70 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<Widget> studentsAndCourses(context){
+    StudentRepo sRepo = StudentRepo();
+
     return [
       Container(
-        margin: const EdgeInsets.all(15.0),
-        padding: const EdgeInsets.all(200.0),
+        alignment: Alignment.center,
+        margin: const EdgeInsets.only(right: 15.0),
+        padding: const EdgeInsets.all(20.0),
         color: Colors.red,
-        child: const Text(
-          'Students'
-        ),
+        child: studentsWidget(sRepo)
       ),
       Container(
-        margin: const EdgeInsets.all(15.0),
-        padding: const EdgeInsets.all(200.0),
+        alignment: Alignment.center,
+        margin: const EdgeInsets.only(left:15.0),
+        padding: const EdgeInsets.all(20.0),
         color: Colors.orange,
-        child: const Text(
-          'Courses'
-        ),
+        child: const CoursesWidget(title: "courses widget"),
       ),
     ];
+  }
+
+  Widget studentsWidget(StudentRepo sRepo){
+    final Future<List> _sRepoList = sRepo.getList();
+    return 
+    Table(
+      border: TableBorder.all(),
+      columnWidths: const <int, TableColumnWidth>{
+        0: FixedColumnWidth(150),
+        1: FixedColumnWidth(80),
+      },
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      children: <TableRow>[
+        TableRow(
+          children: <Widget>[
+            FutureBuilder<List>(
+              future: _sRepoList,
+
+              builder: (BuildContext context, AsyncSnapshot<List> snapshot){
+
+                List<Widget> children;
+                if (snapshot.hasData) {
+                  children = <Widget>[
+                    Text('Result: ${snapshot.data}'),
+                  ];
+                } else if (snapshot.hasError) {
+                  children = <Widget>[
+                    Text('Error: ${snapshot.error}'),
+                  ];
+                } else {
+                  children = const <Widget>[
+                    Text('Awaiting result...'),
+                  ];
+                }
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: children,
+                  ),
+                );
+                
+              }
+            ),
+          ],
+        ),
+      ],      
+    );
   }
 }

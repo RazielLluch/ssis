@@ -4,7 +4,7 @@ import 'package:ssis/misc/scope.dart';
 
 class SearchHandler{
     SearchHandler();
-
+    
     Future<List<dynamic>> searchItem(var query, Scope scope)async{
         
         List<List> validSearches = [];
