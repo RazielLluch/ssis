@@ -12,22 +12,22 @@ class FileHandler{
       return dir.absolute.path;
     }
 
-    Future<List<List>> readFile(String file_name) async{
-        File csvFile = File('${getDirectory()}$file_name.csv');
+    Future<List<List>> readFile(String filename) async{
+        File csvFile = File('${getDirectory()}$filename.csv');
         return await csvToList(csvFile);
     }
 
-    void init(List<List> data, String filename) async{
+    Future<void> init(List<List> data, String filename) async{
 
         String directory = '${getDirectory()}$filename.csv';
         // print('This is your file directory: $directory');
         await File(directory).create(recursive: true).then((File file){
         });
 
-        appendCsv(data, filename);
+        await appendCsv(data, filename);
     }  
 
-    void appendCsv(List<List> data, String filename)async{
+    Future<void> appendCsv(List<List> data, String filename)async{
 
         // print("appedCsv Start\n");
 
@@ -44,12 +44,16 @@ class FileHandler{
         String csv = await listToCsv(csvList);
         // print('3: $csv');
 
-        saveCsvFile(csv, csvFile);
+        await saveCsvFile(csv, csvFile);
         // print("appendCsv end");
     }
 
-    saveCsvFile(String data, File csvFile){
-        csvFile.writeAsStringSync(data);
+    deleteFromCsv(){
+      
+    }
+
+    saveCsvFile(String data, File csvFile)async{
+      csvFile.writeAsStringSync(data);
     }
 
     Future<String> listToCsv(List<List> listToConvert) async{

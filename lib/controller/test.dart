@@ -1,87 +1,45 @@
 import 'package:flutter/material.dart';
 
-/// Flutter code sample for [FutureBuilder].
-
-void main() => runApp(const FutureBuilderExampleApp());
-
-class FutureBuilderExampleApp extends StatelessWidget {
-  const FutureBuilderExampleApp({super.key});
-
+class StatefullWidgetDemo extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: FutureBuilderExample(),
-    );
+  _StatefulWidgetDemoState createState() {
+    return new _StatefulWidgetDemoState();
   }
 }
 
-class FutureBuilderExample extends StatefulWidget {
-  const FutureBuilderExample({super.key});
+class _StatefulWidgetDemoState extends State<StatefullWidgetDemo> {
+  String _textFromFile = "";
 
-  @override
-  State<FutureBuilderExample> createState() => _FutureBuilderExampleState();
-}
-
-class _FutureBuilderExampleState extends State<FutureBuilderExample> {
-  final Future<String> _calculation = Future<String>.delayed(
-    const Duration(seconds: 2),
-    () => 'Data Loaded',
-  );
+  _StatefulWidgetDemoState() {
+    getTextFromFile().then((val) => setState(() {
+          _textFromFile = val;
+        }));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTextStyle(
-      style: Theme.of(context).textTheme.displayMedium!,
-      textAlign: TextAlign.center,
-      child: FutureBuilder<String>(
-        future: _calculation, // a previously-obtained Future<String> or null
-        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-          List<Widget> children;
-          if (snapshot.hasData) {
-            children = <Widget>[
-              const Icon(
-                Icons.check_circle_outline,
-                color: Colors.green,
-                size: 60,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Text('Result: ${snapshot.data}'),
-              ),
-            ];
-          } else if (snapshot.hasError) {
-            children = <Widget>[
-              const Icon(
-                Icons.error_outline,
-                color: Colors.red,
-                size: 60,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Text('Error: ${snapshot.error}'),
-              ),
-            ];
-          } else {
-            children = const <Widget>[
-              SizedBox(
-                width: 60,
-                height: 60,
-                child: CircularProgressIndicator(),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Text('Awaiting result...'),
-              ),
-            ];
-          }
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: children,
-            ),
-          );
-        },
+    return  Scaffold(
+      appBar:  AppBar(
+        title:  Text('Stateful Demo'),
+      ),
+      body:  SingleChildScrollView(
+        padding:  EdgeInsets.all(8.0),
+        child:  Text(
+          _textFromFile,
+          style:  TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 19.0,
+          ),
+        ),
       ),
     );
+  }
+
+  Future<String> getFileData(String path) async {
+    return "your data from file";
+  }
+
+  Future<String> getTextFromFile() async {
+    return await getFileData("test.txt");
   }
 }

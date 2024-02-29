@@ -2,17 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:ssis/models/Student.dart';
 import 'package:ssis/respository/course_repo.dart';
 import 'package:ssis/respository/student_repo.dart';
-import 'package:ssis/handlers/searching_handler.dart';
-import 'package:ssis/widgets/search_widget.dart';
+import 'package:ssis/widgets/parent_widget.dart';
 import 'package:desktop_window/desktop_window.dart';
-import 'package:ssis/misc/scope.dart';
-import 'package:ssis/widgets/students_widget.dart';
-import 'package:ssis/widgets/courses_widget.dart';
-
 
 void main() async{
-  CourseRepo cRepo = CourseRepo();
-  StudentRepo sRepo = StudentRepo();
+  
   runApp(const MyApp());
 }
 
@@ -43,7 +37,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'SSIS Home Page'),
+      home: const MyHomePage(title: 'Simple Student Information System'),
     );
   }
 
@@ -76,151 +70,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  //testing method
-  void _addInfo() async{
-    CourseRepo cRepo = CourseRepo();
-    cRepo.updateCsv([["Bachelor of Science in Computer Science", "BSCS"]]);
-
-    StudentRepo sRepo = StudentRepo();
-    sRepo.updateCsv([["2022-0834", "Josiah Raziel S. Lluch", 2, "Male", "BSCS"]]);
-  }
-
-  //testing method
-  void _search() async{
-    print("start search");
-    
-    SearchHandler sHandler = SearchHandler();
-    
-    List list = await sHandler.searchItem("BA", Scope.student);
-    print(list);
-    print("end");
-  }
-
   @override
   Widget build(BuildContext context) {
+    // CourseRepo();
+    // StudentRepo();
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Container(
-          decoration: const BoxDecoration(
-            shape: BoxShape.rectangle,
-            color: Colors.green,
-          ),
-          margin: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 20.0),
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                margin: const EdgeInsets.only(bottom: 16.0),
-                padding: const EdgeInsets.all(10.0),
-                alignment: Alignment.center,
-                color: Colors.yellow,
-                child: const Text(
-                'Search'
-                ),
-              ),
-              Container(
-                color: Colors.blue,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: studentsAndCourses(context),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _search,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
-
-  List<Widget> studentsAndCourses(context){
-    StudentRepo sRepo = StudentRepo();
-
-    return [
-      Container(
-        alignment: Alignment.center,
-        margin: const EdgeInsets.only(right: 15.0),
-        padding: const EdgeInsets.all(20.0),
-        color: Colors.red,
-        child: studentsWidget(sRepo)
-      ),
-      Container(
-        alignment: Alignment.center,
-        margin: const EdgeInsets.only(left:15.0),
-        padding: const EdgeInsets.all(20.0),
-        color: Colors.orange,
-        child: const CoursesWidget(title: "courses widget"),
-      ),
-    ];
-  }
-
-  Widget studentsWidget(StudentRepo sRepo){
-    final Future<List> _sRepoList = sRepo.getList();
-    return 
-    Table(
-      border: TableBorder.all(),
-      columnWidths: const <int, TableColumnWidth>{
-        0: FixedColumnWidth(150),
-        1: FixedColumnWidth(80),
-      },
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      children: <TableRow>[
-        TableRow(
-          children: <Widget>[
-            FutureBuilder<List>(
-              future: _sRepoList,
-
-              builder: (BuildContext context, AsyncSnapshot<List> snapshot){
-
-                List<Widget> children;
-                if (snapshot.hasData) {
-                  children = <Widget>[
-                    Text('Result: ${snapshot.data}'),
-                  ];
-                } else if (snapshot.hasError) {
-                  children = <Widget>[
-                    Text('Error: ${snapshot.error}'),
-                  ];
-                } else {
-                  children = const <Widget>[
-                    Text('Awaiting result...'),
-                  ];
-                }
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: children,
-                  ),
-                );
-                
-              }
-            ),
-          ],
-        ),
-      ],      
-    );
-  }
+    return const ParentWidget(title: "Simple Student Information System");
+  } 
 }

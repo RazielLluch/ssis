@@ -1,79 +1,127 @@
-// import 'package:flutter/material.dart';
-// import 'package:ssis/respository/student_repo.dart';
+import 'package:flutter/material.dart';
+import 'package:ssis/respository/student_repo.dart';
 
-// class StudentsWidget extends StatefulWidget{
-//     const StudentsWidget({super.key, required this.title});
-//     final String title;
+class StudentsWidget extends StatefulWidget{
+  const StudentsWidget({super.key});
 
-//   @override
-//   State<StudentsWidget> createState() => _StudentsWidget();
-// }
+  @override
+  State<StudentsWidget> createState() => _StudentsWidget();
+}
 
-// class _StudentsWidget extends State<StudentsWidget>{
+class _StudentsWidget extends State<StudentsWidget>{
   
-//   StudentRepo sRepo = StudentRepo();
+  StudentRepo sRepo = StudentRepo();
+  late Future<List<List>> data;
 
-//   Table readDataTable(){
-//     final Future<List> _sRepoList = sRepo.getList();
-//     return 
-//     Table(
-//       border: TableBorder.all(),
-//       columnWidths: const <int, TableColumnWidth>{
-//         0: FixedColumnWidth(70),  //ID Number
-//         1: FixedColumnWidth(200), //Student Name
-//         2: FixedColumnWidth(30),  //Year level
-//         3: FixedColumnWidth(80),  //Gender
-//         4: FixedColumnWidth(100), //Course
-//       }
-//     );
-//   }
-
-
-//   @override
-//   Widget build(BuildContext context){
+  List<TableRow> buildTable(List<List> data){
     
-//     return 
-//     Table(
-//       border: TableBorder.all(),
-//       columnWidths: const <int, TableColumnWidth>{
-//         0: FixedColumnWidth(100),
-//         1: FixedColumnWidth(100),
-//       },
-//       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-//       children: <TableRow>[
-//         TableRow(
-//           children: <Widget>[
-//             FutureBuilder<List>(
-//               future: _sRepoList,
+    List<TableRow> rows = [];
 
-//               builder: (BuildContext context, AsyncSnapshot<List> snapshot){
+    for(int i = 1; i < data.length; i++){
+      rows.add(
+        TableRow(
+          children: [
+            Center(child: Text(data[i][0].toString())),
+            Center(child: Text(data[i][1].toString())),
+            Center(child: Text(data[i][2].toString())),
+            Center(child: Text(data[i][3].toString())),
+            Center(child: Text(data[i][4].toString())),
+          ],
+        ),
+      );
+    }
 
-//                 List<Widget> children;
-//                 if (snapshot.hasData) {
-//                   children = <Widget>[
-//                     Text('Result: ${snapshot.data}'),
-//                   ];
-//                 } else if (snapshot.hasError) {
-//                   children = <Widget>[
-//                     Text('Error: ${snapshot.error}'),
-//                   ];
-//                 } else {
-//                   children = const <Widget>[
-//                     Text('Awaiting result...'),
-//                   ];
-//                 }
-//                 return Center(
-//                   child: Column(
-//                     mainAxisAlignment: MainAxisAlignment.center,
-//                     children: children,
-//                   ),
-//                 );
-                
-//               }
-//             ),
-//           ],
-//         ),
-//       ],      
-//     );
-//   }
-// }
+    return rows;
+  }
+
+
+  @override
+  Widget build(BuildContext context){
+
+    data = sRepo.getList();
+
+    return FutureBuilder<List<List<dynamic>>>(
+      future: data,
+      builder: (context, snapshot){
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No data available'));
+        } else {
+          return Container(
+            alignment: Alignment.topCenter,
+            margin: const EdgeInsets.only(right:8.0),
+            // padding: const EdgeInsets.all(20.0),
+            // color: Colors.orange,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black),
+            ),
+            child: Column(
+              children: [
+                Table(
+                  border: TableBorder.all(),
+                  columnWidths: const <int, TableColumnWidth>{
+                    0: FixedColumnWidth(100),
+                    1: FixedColumnWidth(303),
+                    2: FixedColumnWidth(70),
+                    3: FixedColumnWidth(100),
+                    4: FixedColumnWidth(100),
+                  },
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  children: [
+                    TableRow(
+                      children: [
+                        Center(child: Text(snapshot.data?[0][0])),
+                        Center(child: Text(snapshot.data?[0][1])),
+                        Center(child: Text(snapshot.data?[0][2])),
+                        Center(child: Text(snapshot.data?[0][3])),
+                        Center(child: Text(snapshot.data?[0][4])),
+                      ]
+                    ),
+                  ],
+                ),
+                Table(
+                  border: TableBorder.all(),
+                  columnWidths: const <int, TableColumnWidth>{
+                    0: FixedColumnWidth(100),
+                    1: FixedColumnWidth(303),
+                    2: FixedColumnWidth(70),
+                    3: FixedColumnWidth(100),
+                    4: FixedColumnWidth(100),
+                  },
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  children: buildTable(snapshot.data!)
+                  )
+              ]
+            )
+          );
+          
+          
+          // Container(
+          //   alignment: Alignment.center,
+          //   margin: const EdgeInsets.only(right:8.0),
+          //   // padding: const EdgeInsets.all(20.0),
+          //   // color: Colors.orange,
+          //   decoration: BoxDecoration(
+          //     border: Border.all(color: Colors.black),
+          //   ),
+          //   child: Table(
+          //     border: TableBorder.all(),
+          //     columnWidths: const <int, TableColumnWidth>{
+          //       0: FixedColumnWidth(100),
+          //       1: FixedColumnWidth(303),
+          //       2: FixedColumnWidth(70),
+          //       3: FixedColumnWidth(100),
+          //       4: FixedColumnWidth(100),
+          //     },
+          //     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          //     children: buildTable(snapshot.data!) 
+          //   )
+          // );
+        }
+      }
+    );
+  }
+}

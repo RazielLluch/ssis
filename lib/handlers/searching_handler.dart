@@ -32,10 +32,6 @@ class SearchHandler{
 
         return validSearches;
     }
-
-    // Future<bool> containsValue(List data, var value) async{
-
-    // }
 }
 
 // void main()async{
