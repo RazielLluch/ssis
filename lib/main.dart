@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ssis/models/Student.dart';
 import 'package:ssis/respository/course_repo.dart';
 import 'package:ssis/respository/student_repo.dart';
-import 'package:ssis/widgets/parent_widget.dart';
+import 'package:ssis/views/parent_widget.dart';
 import 'package:desktop_window/desktop_window.dart';
 
 void main() async{
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Simple Student Information System'),

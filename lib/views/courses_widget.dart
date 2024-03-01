@@ -21,8 +21,14 @@ class _CoursesWidget extends State<CoursesWidget>{
       rows.add(
         TableRow(
           children: [
-            Center(child: Text(data[i][0].toString())),
-            Center(child: Text(data[i][1].toString())),
+            Container(
+              padding: const EdgeInsets.only(left: 7, top: 1, bottom: 1),
+              child: Text(data[i][0].toString())
+              ),
+            Container(
+              padding: const EdgeInsets.only(left: 7, top: 1, bottom: 1),
+              child: Text(data[i][1].toString())
+              ),
           ],
         ),
       );
@@ -47,6 +53,7 @@ class _CoursesWidget extends State<CoursesWidget>{
           return const Center(child: Text('No data available'));
         } else {
           return Container(
+            height: 450,
             alignment: Alignment.topCenter,
             margin: const EdgeInsets.only(left:8.0),
             // padding: const EdgeInsets.all(20.0),
@@ -74,7 +81,7 @@ class _CoursesWidget extends State<CoursesWidget>{
                   ],
                 ),
                 Table(
-                border: TableBorder.all(),
+                // border: TableBorder.all(),
                 columnWidths: const <int, TableColumnWidth>{
                   0: FixedColumnWidth(150),
                   1: FixedColumnWidth(322),

@@ -4,6 +4,8 @@ import 'package:ssis/respository/student_repo.dart';
 class StudentsWidget extends StatefulWidget{
   const StudentsWidget({super.key});
 
+  
+
   @override
   State<StudentsWidget> createState() => _StudentsWidget();
 }
@@ -21,11 +23,26 @@ class _StudentsWidget extends State<StudentsWidget>{
       rows.add(
         TableRow(
           children: [
-            Center(child: Text(data[i][0].toString())),
-            Center(child: Text(data[i][1].toString())),
-            Center(child: Text(data[i][2].toString())),
-            Center(child: Text(data[i][3].toString())),
-            Center(child: Text(data[i][4].toString())),
+            Container(
+              padding: const EdgeInsets.only(left: 7, top: 1, bottom: 1),
+              child: Text(data[i][0].toString())
+              ),
+            Container(
+              padding: const EdgeInsets.only(left: 7, top: 1, bottom: 1),
+              child: Text(data[i][1].toString())
+              ),
+            Container(
+              padding: const EdgeInsets.only(left: 7, top: 1, bottom: 1),
+              child: Text(data[i][2].toString())
+              ),
+            Container(
+              padding: const EdgeInsets.only(left: 7, top: 1, bottom: 1),
+              child: Text(data[i][3].toString())
+              ),
+            Container(
+              padding: const EdgeInsets.only(left: 7, top: 1, bottom: 1),
+              child: Text(data[i][4].toString())
+              ),
           ],
         ),
       );
@@ -51,6 +68,7 @@ class _StudentsWidget extends State<StudentsWidget>{
           return const Center(child: Text('No data available'));
         } else {
           return Container(
+            height: 450,
             alignment: Alignment.topCenter,
             margin: const EdgeInsets.only(right:8.0),
             // padding: const EdgeInsets.all(20.0),
@@ -83,7 +101,7 @@ class _StudentsWidget extends State<StudentsWidget>{
                   ],
                 ),
                 Table(
-                  border: TableBorder.all(),
+                  // border: TableBorder.all(),
                   columnWidths: const <int, TableColumnWidth>{
                     0: FixedColumnWidth(100),
                     1: FixedColumnWidth(303),
@@ -97,29 +115,6 @@ class _StudentsWidget extends State<StudentsWidget>{
               ]
             )
           );
-          
-          
-          // Container(
-          //   alignment: Alignment.center,
-          //   margin: const EdgeInsets.only(right:8.0),
-          //   // padding: const EdgeInsets.all(20.0),
-          //   // color: Colors.orange,
-          //   decoration: BoxDecoration(
-          //     border: Border.all(color: Colors.black),
-          //   ),
-          //   child: Table(
-          //     border: TableBorder.all(),
-          //     columnWidths: const <int, TableColumnWidth>{
-          //       0: FixedColumnWidth(100),
-          //       1: FixedColumnWidth(303),
-          //       2: FixedColumnWidth(70),
-          //       3: FixedColumnWidth(100),
-          //       4: FixedColumnWidth(100),
-          //     },
-          //     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          //     children: buildTable(snapshot.data!) 
-          //   )
-          // );
         }
       }
     );
