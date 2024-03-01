@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:ssis/respository/student_repo.dart';
 import 'package:ssis/respository/course_repo.dart';
+import 'package:ssis/misc/scope.dart';
 
 class EditButton extends StatefulWidget{
-  const EditButton({super.key});
+  final int index;
+  List<List> data;
+  final VoidCallback callback;
+  final Scope scope;
+  EditButton({super.key, required this.data,required this.index, required this.callback, required this.scope});
 
   @override
   State<EditButton> createState() => _EditButton();
@@ -11,36 +16,57 @@ class EditButton extends StatefulWidget{
 
 class _EditButton extends State<EditButton>{
 
+  late String scope;
   CourseRepo cRepo = CourseRepo();
-  static late Future<List> courseKeys;
+  static late Future<List>? courseKeys;
 
-  StudentRepo sRepo = StudentRepo();
+  late StudentRepo sRepo;
   late Future<List<List>> data;
-  
-  final sIDController = TextEditingController();
-  final sNameController = TextEditingController();
-  final sYrController = TextEditingController();
-  final sGenderController = TextEditingController();
+
   final sCourseController = TextEditingController();
   late dynamic _dropdownValue;
 
-    void _resetControllers(){
-    sIDController.clear();
-    sNameController.clear();
-    sYrController.clear();
-    sGenderController.clear();
-    sCourseController.clear();
+  List<TextEditingController>  controllers = [];
+
+  void initControllers(){
+    for(int i = 0; i < widget.data[widget.index].length; i++){
+      controllers.add(TextEditingController());
+    }
+
+    print("controllers length: ${controllers.length}");
   }
 
-  void _addInfo(List data){
-    sRepo = StudentRepo();
-    sRepo.updateCsv([data]);
+  void _setControllers(){
+    for(int i = 0; i < widget.data[widget.index].length; i++){
+      controllers[i].text = widget.data[widget.index][i].toString();
+    }
+  }
+
+  void _resetControllers(){
+
+    for(int i = 0; i < widget.data[widget.index].length; i++){
+      controllers[i].clear();
+    }
+  }
+
+  void _editInfo(List data){
+
+    if(widget.scope == Scope.student){
+      sRepo = StudentRepo();
+      sRepo.editCsv(widget.index, data);
+    }
+    else{
+      cRepo.editCsv(widget.index, data);
+    }
+
+    print(data);
 
     setState((){
     });
   }
 
-  dropdownCallback(dynamic? selectedValue){
+  //this function is only used in the scope of a student
+  dropdownCallback(dynamic selectedValue){
     if (selectedValue is String){
       setState(() {
         sCourseController.text = selectedValue;
@@ -48,7 +74,7 @@ class _EditButton extends State<EditButton>{
     }
   }
 
-  FutureBuilder dropdownButtonBuilder(Future<List> items){
+  FutureBuilder dropdownButtonBuilder(Future<List>? items){
     return FutureBuilder(
       future: items,
       builder: (context, snapshot){
@@ -70,7 +96,7 @@ class _EditButton extends State<EditButton>{
                 return DropdownMenuItem(
                   value: value,
                   child: Container(
-                    padding: EdgeInsets.only(left: 10),
+                    padding: const EdgeInsets.only(left: 10),
                     child: Text(value)
                   ),
                 );
@@ -83,89 +109,132 @@ class _EditButton extends State<EditButton>{
     );
   }
 
+  Dialog dialogBuilder(){
+
+    double height;
+    double width = 350;
+    List<String> columns;
+    if(widget.scope == Scope.student){
+      height = 450;
+      columns = ["ID Number", "Name", "Year Level", "Gender", "Course Code"];
+      scope = "student";
+    }else{
+      height = 270;
+      columns = ["Course Code", "Course Name"];
+      scope = "course";
+    }
+
+    List<Widget> dialogElements = [
+      Text(
+        "Edit $scope"
+      )
+    ];
+    for(int i = 0; i < columns.length; i++){
+      dialogElements.add(
+        TextField(
+          controller: controllers[i],
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            hintText: 'Input ${columns[i]}'
+          ),
+        )
+      );
+    }
+
+    if(widget.scope == Scope.student){
+
+      courseKeys = cRepo.listPrimaryKeys();
+
+      dialogElements.add(
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Row(
+            children: [
+              dropdownButtonBuilder(
+                courseKeys
+              )
+            ]
+          )
+        ),
+      );
+    }
+
+    dialogElements.add(
+      Container(
+        alignment: Alignment.centerRight,
+        child: TextButton(
+          child: const Text("add"),
+          onPressed: (){
+
+            List data = [];
+            for(int i = 0; i < controllers.length; i++){
+              data.add(controllers[i].text);
+            }
+
+            _editInfo(data);
+            _resetControllers();
+            Navigator.pop(context);
+            widget.callback();
+          },
+        )
+      )
+    );
+
+    return Dialog(
+      child: Container(
+        height: height,
+        width: width,
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: dialogElements,
+        )
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context){
 
+    if(widget.scope == Scope.student){
+      scope = "Student";
+    }else{
+      scope = "Course";
+    }
+
+    sRepo = StudentRepo();
     courseKeys = cRepo.listPrimaryKeys();
     data = sRepo.getList();
 
-    return FloatingActionButton(
-                        onPressed: (){
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context){
-                              return Dialog(
-                                child: Container(
-                                  height: 450,
-                                  width: 350,
-                                  padding: const EdgeInsets.all(20),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "Edit Student"
-                                      ),
-                                      TextField(
-                                        controller: sIDController,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Input ID Number'
-                                        ),
-                                      ),
-                                      TextField(
-                                        controller: sNameController,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Input Name'
-                                        ),
-                                      ),
-                                      TextField(
-                                        controller: sYrController,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Input Year Level'
-                                        ),
-                                      ),
-                                      TextField(
-                                        controller: sGenderController,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Input Gender'
-                                        ),
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.grey),
-                                          borderRadius: BorderRadius.circular(5),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            dropdownButtonBuilder(
-                                              courseKeys
-                                            )
-                                          ]
-                                        )
-                                      ),
-                                      Container(
-                                        alignment: Alignment.centerRight,
-                                        child: TextButton(
-                                          child: const Text("add"),
-                                          onPressed: (){
-                                            _addInfo([sIDController.text,sNameController.text,sYrController.text,sGenderController.text,sCourseController.text]);
-                                            _resetControllers();
-                                            Navigator.pop(context);
-                                          },
-                                        )
-                                      )
-                                    ],
-                                  )
-                                )
-                              );
-                            }
-                          );
-                        },
-                        tooltip: 'Edit Student',
-                        child: const Icon(Icons.edit),
-                      );
+    if(widget.index == -1){
+      return FloatingActionButton(
+        onPressed:  null,
+        backgroundColor: Colors.grey,
+        tooltip: 'Select a $scope to edit first!',
+        child: const Icon(Icons.edit),
+      );
+    }
+    else{
+      if(controllers.isEmpty){
+        initControllers();
+      }
+      return FloatingActionButton(
+        onPressed: (){
+          _setControllers();
+
+          showDialog(
+            context: context,
+            builder: (BuildContext context){
+              return dialogBuilder();
+            }
+          );
+        },
+        tooltip: 'Edit $scope',
+        child: const Icon(Icons.edit),
+      );
+    }
   }
 }

@@ -41,7 +41,7 @@ class _AddButton extends State<AddButton>{
     });
   }
 
-  dropdownCallback(dynamic? selectedValue){
+  dropdownCallback(dynamic selectedValue){
     if (selectedValue is String){
       setState(() {
         sCourseController.text = selectedValue;

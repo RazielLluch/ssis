@@ -1,4 +1,4 @@
 enum Scope{
   student,
-  course
+  course,
 }

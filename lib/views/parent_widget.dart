@@ -65,7 +65,13 @@ class _ParentWidget extends State<ParentWidget>{
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: const TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w500
+          )
+          ),
         centerTitle: true,
       ),
       body: Center(

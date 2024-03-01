@@ -3,31 +3,32 @@ import 'package:csv/csv.dart' as csv;
 class FileHandler{ 
 
     late final Directory dir;
+    late final filename;
 
-    FileHandler(){
-        dir = Directory.fromUri(Uri.directory('userdata'));
+    FileHandler(this.filename){
+      dir = Directory.fromUri(Uri.directory('userdata'));
     }
     
     String getDirectory(){
       return dir.absolute.path;
     }
 
-    Future<List<List>> readFile(String filename) async{
+    Future<List<List>> readFile() async{
         File csvFile = File('${getDirectory()}$filename.csv');
         return await csvToList(csvFile);
     }
 
-    Future<void> init(List<List> data, String filename) async{
+    Future<void> init(List<List> data) async{
 
         String directory = '${getDirectory()}$filename.csv';
         // print('This is your file directory: $directory');
         await File(directory).create(recursive: true).then((File file){
         });
 
-        await appendCsv(data, filename);
+        await appendCsv(data);
     }  
 
-    Future<void> appendCsv(List<List> data, String filename)async{
+    Future<void> appendCsv(List<List> data)async{
 
         // print("appedCsv Start\n");
 
@@ -48,8 +49,28 @@ class FileHandler{
         // print("appendCsv end");
     }
 
-    deleteFromCsv(){
-      
+    Future<void> editCsv(int index, List data)async{
+
+        File csvFile = File('${getDirectory()}$filename.csv');
+        List<List> csvList = await csvToList(csvFile);
+
+        csvList[index] = data;
+
+        String csv = await listToCsv(csvList);
+
+        await saveCsvFile(csv, csvFile);
+    }
+
+    Future<void> deleteCsv(int index) async{
+
+        File csvFile = File('${getDirectory()}$filename.csv');
+        List<List> csvList = await csvToList(csvFile);
+
+        csvList.remove(csvList[index]);
+
+        String csv = await listToCsv(csvList);
+
+        await saveCsvFile(csv, csvFile);
     }
 
     saveCsvFile(String data, File csvFile)async{
