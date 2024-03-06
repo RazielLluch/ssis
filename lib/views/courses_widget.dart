@@ -9,9 +9,26 @@ class CoursesWidget extends StatefulWidget{
 }
 
 class _CoursesWidget extends State<CoursesWidget>{
+
+  
   
   CourseRepo cRepo = CourseRepo();
   late Future<List<List>> data;
+  final courseIdController = TextEditingController();
+  final courseNameController = TextEditingController();
+
+  _resetControllers(){
+    courseIdController.clear();
+    courseNameController.clear();
+  }
+
+  void _addInfo(List data){
+    cRepo = CourseRepo();
+    cRepo.updateCsv([data]);
+
+    setState((){
+    });
+  }
     
   List<TableRow> buildTable(List<List> data){
     
@@ -24,11 +41,11 @@ class _CoursesWidget extends State<CoursesWidget>{
             Container(
               padding: const EdgeInsets.only(left: 7, top: 1, bottom: 1),
               child: Text(data[i][0].toString())
-              ),
+            ),
             Container(
               padding: const EdgeInsets.only(left: 7, top: 1, bottom: 1),
               child: Text(data[i][1].toString())
-              ),
+            ),
           ],
         ),
       );
@@ -53,41 +70,162 @@ class _CoursesWidget extends State<CoursesWidget>{
           return const Center(child: Text('No data available'));
         } else {
           return Container(
-            height: 450,
+            height: 500,
             alignment: Alignment.topCenter,
-            margin: const EdgeInsets.only(left:8.0),
+            margin: const EdgeInsets.only(left:6.0),
             // padding: const EdgeInsets.all(20.0),
             // color: Colors.orange,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black),
+              borderRadius: BorderRadius.circular(8)
             ),
             child: Column(
               children: [
-                Table(
-                  border: TableBorder.all(),
-                  columnWidths: const <int, TableColumnWidth>{
-                    0: FixedColumnWidth(150),
-                    1: FixedColumnWidth(322),
-                  },
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  children: [
-                    TableRow(
-                      
-                      children: [
-                        Center(child: Text(snapshot.data?[0][0])),
-                        Center(child: Text(snapshot.data?[0][1]))
-                      ]
-                    )
-                  ],
+                SizedBox(
+                  height: 440,
+                  child: Column(
+                    children: [
+                      Table(
+                        border: const TableBorder(bottom: BorderSide(color: Colors.black)),
+                        columnWidths: const <int, TableColumnWidth>{
+                          0: FixedColumnWidth(150),
+                          1: FixedColumnWidth(322),
+                        },
+                        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                        children: [
+                          TableRow( 
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                    right: BorderSide(color: Colors.black)
+                                  )
+                                ),
+                                child: Text(snapshot.data?[0][0])
+                              ),
+                              Center(child: Text(snapshot.data?[0][1]))
+                            ]
+                          )
+                        ],
+                      ),
+                      Table(
+                      // border: TableBorder.all(),
+                      columnWidths: const <int, TableColumnWidth>{
+                        0: FixedColumnWidth(150),
+                        1: FixedColumnWidth(322),
+                      },
+                      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                      children: buildTable(snapshot.data!)
+                      )
+                    ]
+                  )
                 ),
-                Table(
-                // border: TableBorder.all(),
-                columnWidths: const <int, TableColumnWidth>{
-                  0: FixedColumnWidth(150),
-                  1: FixedColumnWidth(322),
-                },
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                children: buildTable(snapshot.data!)
+                Expanded(
+                  child: Row(
+                    children: [
+                      FloatingActionButton(
+                        onPressed: (){
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context){
+                              return Dialog(
+                                child: Container(
+                                  height: 450,
+                                  width: 350,
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        "Edit Course"
+                                      ),
+                                      TextField(
+                                        controller: courseIdController,
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          hintText: 'Input New Course Code'
+                                        ),
+                                      ),
+                                      TextField(
+                                        controller: courseNameController,
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          hintText: 'Input New Course Name'
+                                        ),
+                                      ),
+                                      Container(
+                                        alignment: Alignment.centerRight,
+                                        child: TextButton(
+                                          child: const Text("add"),
+                                          onPressed: (){
+                                            _addInfo([courseIdController.text, courseNameController.text]);
+                                            _resetControllers();
+                                            Navigator.pop(context);
+                                          },
+                                        )
+                                      )
+                                    ],
+                                  )
+                                )
+                              );
+                            }
+                          );
+                        },
+                        tooltip: "Edit Course",
+                        child: const Icon(Icons.edit)
+                      ),
+                      FloatingActionButton(
+                        onPressed: (){
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context){
+                              return Dialog(
+                                child: Container(
+                                  height: 350,
+                                  width: 350,
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text("Add new Course"),
+                                      TextField(
+                                        controller: courseIdController,
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          hintText: 'Input Course Code'
+                                        ),
+                                      ),
+                                      TextField(
+                                        controller: courseNameController,
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          hintText: 'Input Course Name'
+                                        ),
+                                      ),
+                                      Container(
+                                        alignment: Alignment.centerRight,
+                                        child: TextButton(
+                                          child: const Text("add"),
+                                          onPressed: (){
+                                            _addInfo([courseIdController.text,courseNameController.text]);
+                                            _resetControllers();
+                                            Navigator.pop(context);
+                                          },
+                                        )
+                                      )
+                                    ],
+                                  )
+                                )
+                              );
+                            }
+                          );
+                        },
+                        tooltip: "Add Course",
+                        child: const Icon(Icons.add)
+                      )
+                    ],
+                  ),
                 )
               ],
             )
