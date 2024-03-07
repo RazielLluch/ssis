@@ -65,7 +65,14 @@ class _ParentWidget extends State<ParentWidget>{
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: const TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w500
+          )
+          ),
+        centerTitle: true,
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -88,16 +95,13 @@ class _ParentWidget extends State<ParentWidget>{
                   alignment: Alignment.center, 
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
+                    borderRadius: BorderRadius.circular(8)
                   ),
                   child: const Text(
                   'Search'
                   ),
                 ),
                 Container(
-                  // color: Colors.blue,
-                  // decoration: BoxDecoration(
-                  //   border: Border.all(color: Colors.black),
-                  // ), 
                   child: Align(
                     alignment: FractionalOffset.topCenter,
                     child: Row(
@@ -106,136 +110,6 @@ class _ParentWidget extends State<ParentWidget>{
                     ),
                   )
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(  
-                      alignment: Alignment.centerRight,
-                      child: FloatingActionButton(
-                        onPressed: (){
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context){
-                              return Dialog(
-                                child: Container(
-                                  height: 450,
-                                  width: 350,
-                                  padding: const EdgeInsets.all(20),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "Add New Course"
-                                      ),
-                                      TextField(
-                                        controller: sIDController,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Input ID Number'
-                                        ),
-                                      ),
-                                      TextField(
-                                        controller: sNameController,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Input Name'
-                                        ),
-                                      ),
-                                      TextField(
-                                        controller: sYrController,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Input Year Level'
-                                        ),
-                                      ),
-                                      TextField(
-                                        controller: sGenderController,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Input Gender'
-                                        ),
-                                      ),
-                                      TextField(
-                                        controller: sCourseController,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Input Course'
-                                        ),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.centerRight,
-                                        child: TextButton(
-                                        child: const Text("add"),
-                                        onPressed: (){
-                                          _addInfo([sIDController.text,sNameController.text,sYrController.text,sGenderController.text,sCourseController.text],Scope.student);
-                                        },
-                                      )
-                                      )
-                                    ],
-                                  )
-                                )
-                              );
-                            }
-                          );
-                        },
-                        tooltip: 'Add Student',
-                        child: const Icon(Icons.add),
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      child: FloatingActionButton(
-                        onPressed: (){
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context){
-                              return Dialog(
-                                child: Container(
-                                  height: 300,
-                                  width: 350,
-                                  padding: const EdgeInsets.all(20),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "Add New Course"
-                                      ),
-                                      TextField(
-                                        controller: cCodeController,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Input Course Code'
-                                        ),
-                                      ),
-                                      TextField(
-                                        controller: cNameController,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Input Course Name'
-                                        ),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.centerRight,
-                                        child: TextButton(
-                                        child: const Text("add"),
-                                        onPressed: (){
-                                          _addInfo([ cCodeController.text, cNameController.text], Scope.course);
-                                        },
-                                      ),
-                                      )
-                                    ],
-                                  )
-                                )
-                              );
-                            }
-                          );
-                        },
-                        tooltip: 'Add Course',
-                        child: const Icon(Icons.add),
-                      ),
-                    ),
-                  ]
-                )
               ],
             ),
           )
@@ -246,8 +120,8 @@ class _ParentWidget extends State<ParentWidget>{
 
   List<Widget> studentsAndCourses(context){
     return [
-      StudentsWidget(),
-      CoursesWidget()
+      const StudentsWidget(),
+      const CoursesWidget()
     ];
   }
 }

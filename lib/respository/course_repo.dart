@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:ssis/handlers/file_handler.dart';
 
 class CourseRepo{
-    late Future<void> _initializer;
+ 
     late FileHandler handler; 
     static bool? exists;
 
     CourseRepo(){
-        handler = FileHandler();
-        _initializer = _init();
+        handler = FileHandler('courses');
+        _init();
     }
 
     Future<void> _init() async{
@@ -19,7 +19,7 @@ class CourseRepo{
         if(exists == false){  
           // print("Initializing course repository");
 
-          await handler.init([["CourseCode", "CourseName"]],'courses');
+          await handler.init([["CourseCode", "CourseName"]]);
 
           // print("Course repository has been initialized");
 
@@ -31,14 +31,35 @@ class CourseRepo{
         
     }
 
+    void editCsv(int index, List data)async{
+      FileHandler handler = FileHandler('courses');
+      handler.editCsv(index, data);
+
+    }
+
+    void deleteCsv(int index)async{
+      FileHandler handler = FileHandler('courses');
+      handler.deleteCsv(index);
+    }
+
     void updateCsv(List<List> data){
-        FileHandler handler = FileHandler();
-        handler.appendCsv(data, 'courses');
+        FileHandler handler = FileHandler('courses');
+        handler.appendCsv(data);
+    }
+
+    Future<List> listPrimaryKeys()async{
+      List keys = await handler.readFile();
+      List result = [];
+      for(int i = 0; i < keys.length; i++){
+        result.add(keys[i][0]);
+      }
+
+      return result;
     }
 
     Future<List<List>> getList() async{
-        FileHandler handler = FileHandler();
-        return await handler.readFile('courses');   
+        FileHandler handler = FileHandler('courses');
+        return await handler.readFile();   
     }
 
 }
